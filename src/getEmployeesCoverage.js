@@ -51,10 +51,12 @@ const result = [
     locations: ['NE', 'NW', 'NW'],
   },
 ];
-const teste = { name: 'Ola' };
+// const teste = { id: '56d43ba3-a5a7-40f6-8dd7-cbb05082383f' };
 
 const getSpecies = (param) => {
-  const { responsibleFor } = employees.find((one) => one.firstName === param.name);
+  const { responsibleFor } = employees.find((one) => one.firstName === param.name
+    || one.lastName === param.name
+    || one.id === param.id);
   const speciesArray = [];
   species.forEach((item) => {
     if (responsibleFor.includes(item.id)) {
@@ -65,7 +67,9 @@ const getSpecies = (param) => {
 };
 
 const getLocations = (param) => {
-  const { responsibleFor } = employees.find((one) => one.firstName === param.name);
+  const { responsibleFor } = (employees.find((one) => one.lastName === param.name
+    || one.firstName === param.name
+    || one.id === param.id));
   const locationsArray = [];
   species.forEach((item) => {
     if (responsibleFor.includes(item.id)) {
@@ -75,39 +79,41 @@ const getLocations = (param) => {
   return locationsArray;
 };
 
-const returnedObject = {
-  id: '',
-  fullName: '',
-  species: '',
-  locations: '',
-};
-
 const verifyEmployee = (object) => {
-  const isEmployeeFirstName = employees.find((one) => one.firstName === object.name);
+  const returnedObject = {
+    id: '',
+    fullName: '',
+    species: '',
+    locations: '',
+  };
 
-  if (isEmployeeFirstName) {
-    returnedObject.id = isEmployeeFirstName.id;
-    returnedObject.fullName = `${isEmployeeFirstName.firstName} ${isEmployeeFirstName.lastName}`;
+  const isEmployee = employees.find((one) => one.firstName === object.name
+    || one.lastName === object.name
+    || one.id === object.id);
+
+  if (isEmployee) {
+    returnedObject.id = isEmployee.id;
+    returnedObject.fullName = `${isEmployee.firstName} ${isEmployee.lastName}`;
     returnedObject.species = getSpecies(object);
     returnedObject.locations = getLocations(object);
     return returnedObject;
   }
 };
 
-console.log(verifyEmployee(teste));
-
 function getEmployeesCoverage(arg) {
   if (!arg) {
     return result;
   }
 
-  if (employees.find((item) => item.firstName === arg.name)
-    || employees.find((item) => item.lastName === arg.name)
-    || employees.find((item) => item.id === arg.id)) {
+  if (employees.find((item) => item.firstName === arg.name
+    || item.lastName === arg.name
+    || item.id === arg.id)) {
     return verifyEmployee(arg);
   }
 
   throw new Error('Informações inválidas');
 }
+
+// console.log(getEmployeesCoverage(teste));
 
 module.exports = getEmployeesCoverage;
