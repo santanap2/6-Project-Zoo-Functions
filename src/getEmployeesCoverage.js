@@ -1,57 +1,41 @@
+/* eslint-disable max-lines-per-function */
 const data = require('../data/zoo_data');
 
 const { employees, species } = data;
-const result = [
-  {
-    id: 'c5b83cb3-a451-49e2-ac45-ff3f54fbe7e1',
-    fullName: 'Nigel Nelson',
-    species: ['lions', 'tigers'],
-    locations: ['NE', 'NW'],
-  },
-  {
-    id: '0e7b460e-acf4-4e17-bcb3-ee472265db83',
-    fullName: 'Burl Bethea',
-    species: ['lions', 'tigers', 'bears', 'penguins'],
-    locations: ['NE', 'NW', 'NW', 'SE'],
-  },
-  {
-    id: 'fdb2543b-5662-46a7-badc-93d960fdc0a8',
-    fullName: 'Ola Orloff',
-    species: ['otters', 'frogs', 'snakes', 'elephants'],
-    locations: ['SE', 'SW', 'SW', 'NW'],
-  },
-  {
-    id: '56d43ba3-a5a7-40f6-8dd7-cbb05082383f',
-    fullName: 'Wilburn Wishart',
-    species: ['snakes', 'elephants'],
-    locations: ['SW', 'NW'],
-  },
-  {
-    id: '9e7d4524-363c-416a-8759-8aa7e50c0992',
-    fullName: 'Stephanie Strauss',
-    species: ['otters', 'giraffes'],
-    locations: ['SE', 'NE'],
-  },
-  {
-    id: '4b40a139-d4dc-4f09-822d-ec25e819a5ad',
-    fullName: 'Sharonda Spry',
-    species: ['otters', 'frogs'],
-    locations: ['SE', 'SW'],
-  },
-  {
-    id: 'c1f50212-35a6-4ecd-8223-f835538526c2',
-    fullName: 'Ardith Azevado',
-    species: ['tigers', 'bears'],
-    locations: ['NW', 'NW'],
-  },
-  {
-    id: 'b0dc644a-5335-489b-8a2c-4e086c7819a2',
-    fullName: 'Emery Elser',
-    species: ['lions', 'bears', 'elephants'],
-    locations: ['NE', 'NW', 'NW'],
-  },
-];
-// const teste = { id: '56d43ba3-a5a7-40f6-8dd7-cbb05082383f' };
+
+const getSpeciesNames = (item) => {
+  const speciesNames = [];
+  species.forEach((one) => {
+    if ((item.responsibleFor).includes(one.id)) {
+      speciesNames.push(one.name);
+    }
+  });
+  return speciesNames;
+};
+
+const getSpeciesLocations = (item) => {
+  const speciesLocations = [];
+  species.forEach((one) => {
+    if ((item.responsibleFor).includes(one.id)) {
+      speciesLocations.push(one.location);
+    }
+  });
+  return speciesLocations;
+};
+
+const getResult = () => {
+  const result = [];
+  employees.forEach((item) => {
+    const object = {
+      id: item.id,
+      fullName: `${item.firstName} ${item.lastName}`,
+      species: getSpeciesNames(item),
+      locations: getSpeciesLocations(item),
+    };
+    result.push(object);
+  });
+  return result;
+};
 
 const getSpecies = (param) => {
   const { responsibleFor } = employees.find((one) => one.firstName === param.name
@@ -70,7 +54,9 @@ const getLocations = (param) => {
   const { responsibleFor } = (employees.find((one) => one.lastName === param.name
     || one.firstName === param.name
     || one.id === param.id));
+
   const locationsArray = [];
+
   species.forEach((item) => {
     if (responsibleFor.includes(item.id)) {
       locationsArray.push(item.location);
@@ -102,7 +88,7 @@ const verifyEmployee = (object) => {
 
 function getEmployeesCoverage(arg) {
   if (!arg) {
-    return result;
+    return getResult();
   }
 
   if (employees.find((item) => item.firstName === arg.name
@@ -114,6 +100,6 @@ function getEmployeesCoverage(arg) {
   throw new Error('Informações inválidas');
 }
 
-// console.log(getEmployeesCoverage(teste));
+console.log(getEmployeesCoverage());
 
 module.exports = getEmployeesCoverage;
