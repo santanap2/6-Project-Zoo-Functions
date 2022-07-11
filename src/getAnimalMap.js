@@ -11,11 +11,15 @@ const locationsOrdened = () => {
   return { NE: ne, NW: nw, SE: se, SW: sw };
 };
 
-const includeNamesTrue = () => {
+const includeNamesTrue = (sort) => {
   const animals = species.map((animal) => {
     const obj = {
       [animal.name]: animal.residents.map((one) => one.name),
     };
+    const objSorted = {
+      [animal.name]: animal.residents.map((one) => one.name).sort(),
+    };
+    if (sort) return objSorted;
     return obj;
   });
   const result = { NE: [], NW: [], SE: [], SW: [] };
@@ -26,20 +30,11 @@ const includeNamesTrue = () => {
   return result;
 };
 
-const sortedTrue = () => {
-  const obj = includeNamesTrue();
-  obj.NE[0].lions.sort(); obj.NE[1].giraffes.sort();
-  obj.NW[0].tigers.sort(); obj.NW[1].bears.sort(); obj.NW[2].elephants.sort();
-  obj.SE[0].penguins.sort(); obj.SE[1].otters.sort();
-  obj.SW[0].frogs.sort(); obj.SW[1].snakes.sort();
-  return obj;
-};
-
 function getAnimalMap(options = {}) {
   const { includeNames, sorted } = options;
   if (!options || !includeNames) return locationsOrdened();
-  if (includeNames) return includeNamesTrue();
-  if (sorted) return sortedTrue();
+  if (sorted) return includeNamesTrue(sorted);
+  return includeNamesTrue();
 }
 
 module.exports = getAnimalMap;
